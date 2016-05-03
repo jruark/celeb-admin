@@ -28,6 +28,8 @@ const isDeveloping = (process.env.NODE_ENV || "").trim() !== "production";
 const port = isDeveloping ? 3001 : process.env.PORT;
 const app = express();
 
+const IMAGE_PATH = process.env.CELEB_IMAGE_PATH;
+
 const multer = require('multer'); // v1.0.5
 var upload = multer(
   {
@@ -68,7 +70,7 @@ if( isDeveloping) {
   app.use(middleware);
   app.use(webpackHotMiddleware(compiler));
   app.use(express.static(PARENT_DIR + '/public'));
-  app.use('/subimage', express.static("C:\\dev\\celebkiosk\\public\\images"));
+  app.use('/subimage', express.static(IMAGE_PATH));
   app.get('/', function response(req,res) {
     res.write(middleware.fileSystem.readFileSync(path.join(PARENT_DIR, 'dist/index.html')));
     res.end();
