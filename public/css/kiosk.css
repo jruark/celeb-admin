@@ -1,0 +1,89 @@
+.header {
+  background-color: darkblue;
+  color: white;
+  width: 100%;
+}
+.admin-header {
+  background-color: darkred;
+  color: white;
+  width: 100%;
+}
+.admin-announcements {
+  border-bottom: 2px solid darkred;
+}
+.announcements {
+  border-bottom: 2px solid darkblue;
+}
+.messages {
+  height: 100%;
+  overflow-y: hidden;
+}
+.admin-messages {
+  height: 100%;
+  overflow-y: auto;
+}
+.admin-images {
+  height: 100%;
+  background-color: #333;
+  color: #eeeeee;
+  overflow-y: auto;
+}
+.images {
+  height: 100%;
+  background-color: #333;
+  color: #eeeeee;
+  overflow-y: hidden;
+}
+.message {
+  border-top: 1px solid darkgray;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  font-size: 1.5em;
+}
+.message-date {
+  text-align: right;
+  font-size: 0.5em;
+  font-style: italic;
+}
+.subdiv {
+  text-align: center;
+  vertical-align: middle;
+  position: relative;
+}
+.subimage {
+  image-orientation: from-image;
+  -webkit-image-orientation: from-image;
+}
+.app {
+  height: 100%;
+}
+.remainder-height {
+  overflow-y: hidden;
+}
+.image-carousel {
+  height: 100%;
+}
+.clock {
+  text-align: right;
+  font-size: 0.8em;
+  position: absolute;
+  top: 20px;
+  right: 5px;
+}
+.image-overlay {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+}
+.button-accept {
+  position: absolute;
+  left: 0px;
+}
+.button-reject {
+  position: absolute;
+  right: 0px;
+}
+.msgbtn {
+  margin-right: 10px;
+}
