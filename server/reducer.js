@@ -1,6 +1,6 @@
 import {processMessageChanges} from './message.js';
 import {processImageChanges} from './image.js';
-import {Map,List} from 'Immutable';
+import {Map,List} from 'immutable';
 
 var initStore = function() {
     console.log("Initializing store.");
