@@ -18,10 +18,6 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 var express = require("express");
 var path = require("path");
-var webpack = require('webpack');
-var webpackMiddleware = require('webpack-dev-middleware');
-var webpackHotMiddleware = require('webpack-hot-middleware');
-var config = require('../webpack.config.js');
 var bodyParser = require("body-parser");
 var message = require('./message.js');
 var image = require('./image.js');
@@ -66,6 +62,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 if (isDeveloping) {
   (function () {
     console.log("Development mode");
+    var webpack = require('webpack');
+    var webpackMiddleware = require('webpack-dev-middleware');
+    var webpackHotMiddleware = require('webpack-hot-middleware');
+    var config = require('../webpack.config.js');
+
     var compiler = webpack(config);
     var middleware = webpackMiddleware(compiler, {
       publicPath: config.output.publicPath,
@@ -96,7 +97,7 @@ if (isDeveloping) {
 } else {
   app.use(express.static(PARENT_DIR + '/dist'));
   app.use(express.static(PARENT_DIR + '/public'));
-  app.use('/subimage', express.static("C:\\dev\\celebkiosk\\public\\images"));
+  app.use('/subimage', express.static(IMAGE_PATH));
   app.get('/', function response(req, res) {
     res.sendFile(path.join(PARENT_DIR, "dist/index.html"));
   });
@@ -179,7 +180,7 @@ app.listen(port, function onStart(err) {
   if (err) {
     console.log(err);
   }
-  console.info("Server running on port " + port + " public path " + config.output.publicPath);
+  console.info("Server running on port " + port);
 });
 
 db.getLatestApprovedMessages(10).then(function (cursor) {
