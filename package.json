@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "debug": "babel-node server/server.js",
-    "start": "set PORT=3001 && set NODE_ENV=production && node ./build/server.js",
+    "start": "node ./build/server.js",
     "test": "",
     "build-client": "rimraf dist && set NODE_ENV=production && webpack --config ./webpack.production.config.js --progress --profile --colors",
     "build-server": "rimraf build && set NODE_ENV=production && babel -d ./build ./server -s",
@@ -55,6 +55,7 @@
     "babel-cli": "^6.7.5",
     "body-parser": "^1.15.0",
     "express": "^4.13.4",
+    "gm": "^1.22.0",
     "immutable": "^3.8.1",
     "jquery": "^2.2.3",
     "multer": "^1.1.0",

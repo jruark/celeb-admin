@@ -2,6 +2,8 @@
 
 var r = require('rethinkdb');
 var db = require('./db.js');
+var gm = require('gm');
+var path = require('path');
 
 var submitImage = function submitImage(req, res, file) {
     return new Promise(function (resolve, reject) {
@@ -52,6 +54,33 @@ var rejectImage = function rejectImage(imgid) {
     return changeStatus(imgid, 2);
 };
 
+var rotateImage = function rotateImage(imgid, left) {
+    return new Promise(function (resolve, reject) {
+        var rotate = 0;
+        var theimg;
+        db.connect().then(function (conn) {
+            return r.table("Images").get(imgid).run(conn).then(function (img) {
+                theimg = img;
+                var imgfile = path.join(process.env.CELEB_IMAGE_PATH, theimg.filename);
+                console.log("Rotating image file at " + imgfile);
+                gm(imgfile).noProfile().rotate('black', left ? -90 : 90).write(imgfile, function (err) {
+                    if (err) {
+                        console.log("Error rotating image: " + JSON.stringify(err));
+                        reject(err);
+                    } else {
+                        rotate = img.rotation || 0;
+                        rotate = rotate + 1;
+                        r.table("Images").get(imgid).update({ rotation: rotate }).run(conn).then(function (dbres) {
+                            console.log("Changed image rotation [" + imgid + "] to " + rotate);
+                            resolve("OK");
+                        });
+                    }
+                });
+            });
+        });
+    });
+};
+
 var processImageChanges = function processImageChanges(state, changes) {
     var imglist = state.get("Images");
     var changed = false;
@@ -74,5 +103,6 @@ var processImageChanges = function processImageChanges(state, changes) {
 exports.submit = submitImage;
 exports.approve = approveImage;
 exports.reject = rejectImage;
+exports.rotate = rotateImage;
 exports.processImageChanges = processImageChanges;
 //# sourceMappingURL=image.js.map

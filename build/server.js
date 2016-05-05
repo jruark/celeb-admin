@@ -35,7 +35,7 @@ adminStore.dispatch({ type: "INIT" });
 var PARENT_DIR = path.join(__dirname, '..');
 
 var isDeveloping = (process.env.NODE_ENV || "").trim() !== "production";
-var port = isDeveloping ? 3001 : process.env.PORT;
+var port = isDeveloping ? 3001 : process.env.ADMINPORT;
 var app = express();
 
 var IMAGE_PATH = process.env.CELEB_IMAGE_PATH;
@@ -156,8 +156,26 @@ app.post("/api/image", function (req, res) {
         res.send("OK");
         res.end();
       });
+    } else {
+      res.status(500);
+      res.send("NOTOK");
+      res.end();
     }
+    return;
+  }
+  // check for rotation instead
+  var rotation = req.body.rotation || "";
+  if (id && (rotation === "left" || rotation === "right")) {
+    image.rotate(id, rotation === "left").then(function () {
+      res.send("OK");
+      res.end();
+    }).catch(function (err) {
+      res.status(500);
+      res.send(err);
+      res.end();
+    });
   } else {
+    res.status(500);
     res.send("NOTOK");
     res.end();
   }

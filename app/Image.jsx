@@ -20,8 +20,9 @@ export default React.createClass({
         maxHeight: this.props.maxHeight,
         margin: "0 auto"
       };
+      var rotation = this.props.image.rotation || 0;
       return <div className="carousel-itemx">
-        <div className="subdiv" style={divStyle}><img style={imgStyle} className={"subimage c"+this.props.image.id} src={"subimage/" + this.props.image.filename}></img></div>
+        <div className="subdiv" style={divStyle}><img style={imgStyle} className={"subimage c"+this.props.image.id} src={"subimage/" + this.props.image.filename + "?" + rotation}></img></div>
         <div className="message-date">{this.getDate().toLocaleTimeString()}</div>
       </div>;
   }

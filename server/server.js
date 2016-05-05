@@ -11,17 +11,17 @@ import startServer from './socketing.js';
 import startAdminServer from './adminsocketing.js';
 
 const store = makeStore();
-store.dispatch({type:"INIT"});
+store.dispatch({ type: "INIT" });
 startServer(store);
 
 const adminStore = makeStore();
-adminStore.dispatch({type:"INIT"});
+adminStore.dispatch({ type: "INIT" });
 startAdminServer(adminStore);
 
 const PARENT_DIR = path.join(__dirname, '..');
 
 const isDeveloping = (process.env.NODE_ENV || "").trim() !== "production";
-const port = isDeveloping ? 3001 : process.env.PORT;
+const port = isDeveloping ? 3001 : process.env.ADMINPORT;
 const app = express();
 
 const IMAGE_PATH = process.env.CELEB_IMAGE_PATH;
@@ -33,7 +33,7 @@ var upload = multer(
       destination: function (req, file, cb) {
         cb(null, path.join(PARENT_DIR, 'public', 'images'));
       },
-      filename: function(req, file, cb) {
+      filename: function (req, file, cb) {
         var ext = path.extname(file.originalname);
         cb(null, Date.now() + ext);
       }
@@ -45,14 +45,14 @@ var upload = multer(
 console.log("process.env.NODE_ENV=[" + process.env.NODE_ENV + "]");
 console.log("isDeveloping=" + isDeveloping);
 
-app.use(bodyParser.urlencoded({extended:false}));
+app.use(bodyParser.urlencoded({ extended: false }));
 
-if( isDeveloping) {
+if (isDeveloping) {
   console.log("Development mode");
-const webpack = require('webpack');
-const webpackMiddleware = require('webpack-dev-middleware');
-const webpackHotMiddleware = require('webpack-hot-middleware');
-const config = require('../webpack.config.js');
+  const webpack = require('webpack');
+  const webpackMiddleware = require('webpack-dev-middleware');
+  const webpackHotMiddleware = require('webpack-hot-middleware');
+  const config = require('../webpack.config.js');
 
   const compiler = webpack(config);
   const middleware = webpackMiddleware(compiler, {
@@ -72,11 +72,11 @@ const config = require('../webpack.config.js');
   app.use(webpackHotMiddleware(compiler));
   app.use(express.static(PARENT_DIR + '/public'));
   app.use('/subimage', express.static(IMAGE_PATH));
-  app.get('/', function response(req,res) {
+  app.get('/', function response(req, res) {
     res.write(middleware.fileSystem.readFileSync(path.join(PARENT_DIR, 'dist/index.html')));
     res.end();
   });
-  app.get('/admin', function response(req,res) {
+  app.get('/admin', function response(req, res) {
     res.write(middleware.fileSystem.readFileSync(path.join(PARENT_DIR, 'dist/admin.html')));
     res.end();
   });
@@ -88,39 +88,39 @@ else {
   app.get('/', function response(req, res) {
     res.sendFile(path.join(PARENT_DIR, "dist/index.html"));
   });
-  app.get('/admin', function response(req,res) {
+  app.get('/admin', function response(req, res) {
     res.sendFile(path.join(PARENT_DIR, "dist/admin.html"));
   });
 }
 
 
-app.post("/kiosk/message", function(req,res) {
+app.post("/kiosk/message", function (req, res) {
   var msg = req.body.message || "";
   msg = msg.trim();
-  if(msg.length==0 || msg.length>140) {
+  if (msg.length == 0 || msg.length > 140) {
     res.send("OK");
     res.end();
     return;
   }
 
-  message.submit(req, res, msg).then(function() {
-      res.send("OK");
-      res.end();
+  message.submit(req, res, msg).then(function () {
+    res.send("OK");
+    res.end();
   });
 });
 
-app.post("/api/message", function(req,res) {
+app.post("/api/message", function (req, res) {
   var id = req.body.message || "";
   var status = req.body.status || 0;
-  if(id && status) {
-    if(+status===1) {
-      message.approve(id).then(function() {
+  if (id && status) {
+    if (+status === 1) {
+      message.approve(id).then(function () {
         res.send("OK");
         res.end();
       });
     }
-    else if(+status===2) {
-      message.reject(id).then(function() {
+    else if (+status === 2) {
+      message.reject(id).then(function () {
         res.send("OK");
         res.end();
       });
@@ -129,35 +129,55 @@ app.post("/api/message", function(req,res) {
   else {
     res.send("NOTOK");
     res.end();
-  } 
+  }
 });
 
-app.post("/api/image", function(req,res) {
+app.post("/api/image", function (req, res) {
   var id = req.body.image || "";
   var status = req.body.status || 0;
-  if(id && status) {
-    if(+status===1) {
-      image.approve(id).then(function() {
+  if (id && status) {
+    if (+status === 1) {
+      image.approve(id).then(function () {
         res.send("OK");
         res.end();
       });
     }
-    else if(+status===2) {
-      image.reject(id).then(function() {
+    else if (+status === 2) {
+      image.reject(id).then(function () {
         res.send("OK");
         res.end();
       });
     }
+    else {
+      res.status(500);
+      res.send("NOTOK");
+      res.end();
+    }
+    return;
+  }
+  // check for rotation instead
+  var rotation = req.body.rotation || "";
+  if (id && (rotation === "left" || rotation === "right")) {
+    image.rotate(id, rotation === "left").then(function () {
+      res.send("OK");
+      res.end();
+    })
+      .catch(function (err) {
+        res.status(500);
+        res.send(err);
+        res.end();
+      });
   }
   else {
+    res.status(500);
     res.send("NOTOK");
     res.end();
-  } 
+  }
 });
 
-app.post("/kiosk/image", upload.single("image"), function(req,res) {
-  if(req.file) {
-    image.submit(req, res, req.file).then(function() {
+app.post("/kiosk/image", upload.single("image"), function (req, res) {
+  if (req.file) {
+    image.submit(req, res, req.file).then(function () {
       console.log("Got file");
       res.send("OK");
       res.end();
@@ -170,36 +190,36 @@ app.post("/kiosk/image", upload.single("image"), function(req,res) {
 });
 
 app.listen(port, function onStart(err) {
-  if(err) {
+  if (err) {
     console.log(err);
   }
-	console.info("Server running on port " + port);
+  console.info("Server running on port " + port);
 });
 
-db.getLatestApprovedMessages(10).then(function(cursor) {
-  cursor.each(function(err, row) {
+db.getLatestApprovedMessages(10).then(function (cursor) {
+  cursor.each(function (err, row) {
     console.log(row);
-    store.dispatch({type:"MESSAGE_CHANGES", changes:row});    
+    store.dispatch({ type: "MESSAGE_CHANGES", changes: row });
   });
 });
 
-db.getLatestApprovedImages(5).then(function(cursor) {
-  cursor.each(function(err, row) {
+db.getLatestApprovedImages(5).then(function (cursor) {
+  cursor.each(function (err, row) {
     console.log(row);
-    store.dispatch({type:"IMAGE_CHANGES", changes:row});    
+    store.dispatch({ type: "IMAGE_CHANGES", changes: row });
   });
 });
 
-db.getPendingMessages(50).then(function(cursor) {
-  cursor.each(function(err, row) {
+db.getPendingMessages(50).then(function (cursor) {
+  cursor.each(function (err, row) {
     console.log(row);
-    adminStore.dispatch({type:"MESSAGE_CHANGES", changes:row});    
+    adminStore.dispatch({ type: "MESSAGE_CHANGES", changes: row });
   });
 });
 
-db.getPendingImages(30).then(function(cursor) {
-  cursor.each(function(err, row) {
+db.getPendingImages(30).then(function (cursor) {
+  cursor.each(function (err, row) {
     console.log(row);
-    adminStore.dispatch({type:"IMAGE_CHANGES", changes:row});    
+    adminStore.dispatch({ type: "IMAGE_CHANGES", changes: row });
   });
 });
