@@ -18,6 +18,9 @@
   height: 100%;
   overflow-y: hidden;
 }
+li.message:nth-child(even) {
+  background-color: #ffeedd;
+}
 .admin-messages {
   height: 100%;
   overflow-y: auto;
@@ -34,11 +37,18 @@
   color: #eeeeee;
   overflow-y: hidden;
 }
+div.messages h3 {
+  border-bottom: 1px solid darkgrey;
+}
+div.images h3 {
+  border-bottom: 1px solid lightgrey;
+}
 .message {
-  border-top: 1px solid darkgray;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
   font-size: 1.5em;
+  padding-left: 0.2em;
+  padding-right: 0.2em;
 }
 .message-date {
   text-align: right;

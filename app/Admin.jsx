@@ -34,7 +34,6 @@ export const Admin = React.createClass({
   render: function() {
 	return <div className='container-fluid'>
     <div className='row fixed-height'><div className='admin-header col-md-12'><h2>Celebration Social Administration<div className='clock'></div></h2></div></div>
-    <div className='row fixed-height'><div className='admin-announcements col-md-12'><h3>Announcements</h3><Announcements announcements={this.props.announcements} /></div></div>
     
     <div className='row remainder-height'>
       <div className='admin-messages col-md-6'>
