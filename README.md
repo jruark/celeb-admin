@@ -1,1 +1,1 @@
-# celeb-student
+# celeb-admin
