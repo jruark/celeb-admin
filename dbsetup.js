@@ -4,8 +4,11 @@ r.connect({
   host: 'localhost', port: 28015
 }, function(err, conn) {
   if(err) throw err;
-  console.log("Creating database.");
-  r.dbCreate(dbname).run(conn)
+  console.log("Dropping old database.");
+  r.dbDrop(dbname).run(conn)
+  .then(function(res) {
+    return r.dbCreate(dbname).run(conn);
+  })
   .then(function(res) {
     console.log("Created database.");
     console.log("Creating Messages");
