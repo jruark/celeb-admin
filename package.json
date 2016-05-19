@@ -63,10 +63,8 @@
     "react-addons-pure-render-mixin": "^15.0.2",
     "react-dom": "^15.0.2",
     "react-redux": "^4.4.5",
-    "react-slick": "^0.12.2",
     "redux": "^3.5.2",
     "rethinkdb": "^2.3.1",
-    "slick-carousel": "^1.6.0",
     "socket.io": "^1.4.6",
     "socket.io-client": "^1.4.6"
   }
