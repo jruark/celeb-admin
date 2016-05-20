@@ -46,7 +46,7 @@ export const Kiosk = React.createClass({
   render: function() {
 	return <div className='container-fluid'>
     <div className='row fixed-height'><div className='header col-md-12'>
-      <h2><img src="images/logo.png" width="30" height="30" />Celebration!<div className='clock'></div></h2>
+      <h2><img src="images/celebrationlogo.png" width="35" height="35" />Celebration!<div className='clock'></div></h2>
     </div></div>
     <div className='row remainder-height'>
       <div className='messages col-md-6'>
